@@ -1,4 +1,6 @@
 import streamlit as st
+from datetime import datetime
+import pytz
 
 from src.ui.base_layout import style_background_dashboard, style_base_layout
 
@@ -234,6 +236,11 @@ def teacher_tab_manage_subjects():
     else:
         st.info("NO SUBJECTS FOUND. CREATE ONE ABOVE")
 
+def convert_to_ist(ts):
+    ist = pytz.timezone("Asia/Kolkata")
+    utc_dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    return utc_dt.astimezone(ist)
+
 
 def teacher_tab_attendance_records():
     st.header('Attendance Records')
@@ -251,8 +258,8 @@ def teacher_tab_attendance_records():
         ts = r.get('timestamp')
 
         data.append({
-            "ts_group": ts.split(".")[0] if ts else None,
-            "Time": datetime.fromisoformat(ts).strftime("%Y-%m-%d %I:%M %p") if ts else "N'A",
+            "ts_group": convert_to_ist(ts).strftime("%Y-%m-%d %H:%M") if ts else None,
+            "Time": convert_to_ist(ts).strftime("%d %b %Y, %I:%M %p") if ts else "N/A",
             "Subject": r['subjects']['name'],
             "Subject Code":r['subjects']['subject_code'],
             "is_present": bool(r.get('is_present', False))
