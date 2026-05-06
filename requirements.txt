@@ -2,6 +2,7 @@ streamlit
 # Utilitites 
 numpy
 pandas
+pytz
 
 # FACE RECOGNITION
 scikit-learn
